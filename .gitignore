@@ -1,26 +1,11 @@
-# LaTeX generated files
-*.aux
-*.bbl
-*.blg
-*.log
-*.out
-*.toc
-*.lof
-*.lot
-*.fls
-*.fdb_latexmk
+class-info.md
 *.synctex.gz
-*.nav
-*.snm
-*.vrb
-*.xdv
-*.ilg
-*.ind
-*.idx
-*.glo
-*.gls
-*.ist
-
-# LaTeX auto-generated directories
-_build
-
+*.log
+*.fls
+*.toc
+*.fdb_latexmk
+*.blg
+*.bbl
+*.aux
+*.out
+*.zip
