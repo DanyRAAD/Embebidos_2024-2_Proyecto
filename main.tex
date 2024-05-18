@@ -1,0 +1,107 @@
+\documentclass[letterpaper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{fullpage}
+\usepackage{lipsum}
+\usepackage{enumitem}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{titling} % Agrega el paquete titling
+\usepackage[left=2.5cm, right=2.5cm, top=2.5cm, bottom=2.5cm]{geometry} % Márgenes de 1 pulgada (2.5 cm)
+\usepackage{setspace}
+\usepackage{graphicx}
+\usepackage{caption} 
+\usepackage{xcolor} % Para definir colores personalizados
+
+\usepackage{listings}
+\lstset{
+	language=Python, % Establece el lenguaje del código
+	basicstyle=\small\ttfamily, % Establece el estilo básico del texto
+	keywordstyle=\color{blue}, % Establece el estilo para las palabras clave
+	commentstyle=\color{green!60!black}, % Establece el estilo para los comentarios
+	stringstyle=\color{red}, % Establece el estilo para las cadenas de texto
+	showstringspaces=false, % No muestra espacios en cadenas de texto
+	numbers=left, % Muestra números de línea a la izquierda
+	numberstyle=\tiny\color{gray}, % Establece el estilo para los números de línea
+	breaklines=true, % Permite partir líneas largas automáticamente
+	frame=single, % Muestra un borde alrededor del código
+}
+
+\setlength{\parindent}{0.5cm} % Sangría de primera línea de 0.5 cm
+\setlength{\parskip}{10pt} % Espaciado entre párrafos de 10 puntos
+\setlength{\parskip}{10pt plus 2pt minus 2pt} % Espaciado de 10 a 12 puntos 
+
+\clubpenalty=10000 % Control de huérfanas
+\widowpenalty=10000 % Control de viudas
+
+\setlength{\droptitle}{-8em} % Ajusta el espacio antes del título
+
+\title{Práctica 8: \\ Desplegado de temperatura en un display digital usando la Raspberry Pi}
+\author{Daniela Ramírez Andrés}
+\date{}
+
+\begin{document}
+	\twocolumn
+	\maketitle
+	\vspace{-6\baselineskip} % Ajuste de espacio negativo para reducir la separación entre el título y el autor
+	\section{Introduction}
+	
+	
+	
+	En esta práctica, implementaremos una comunicación I2C para facilitar la interacción entre dispositivos. En particular, estableceremos una conexión entre nuestro display LCD y nuestra Raspberry Pi utilizando este protocolo. Además, integraremos un dispositivo 1-Wire como nuestro sensor de temperatura. Con estos componentes, podremos visualizar la temperatura en el display, aprovechando así la efectividad del protocolo 1-Wire.
+	
+	Es importante destacar que el protocolo 1-Wire prescinde de una señal de reloj externa. En su lugar, los dispositivos esclavos se sincronizan internamente con una señal generada por el dispositivo maestro. Esta característica es fundamental para comprender el funcionamiento y la eficacia de este protocolo. \cite{agnihotri2023}
+	
+	
+	\subsection{Step 1 Wiring}
+	
+	
+	Para el primer paso, realizaremos la conexión física de nuestro circuito. Esto implica la instalación del sensor de temperatura junto con las resistencias necesarias, así como la incorporación de los LED. Una vez completada esta etapa, procederemos a conectar el adaptador al display. Posteriormente, pasaremos al segundo paso, que consistirá en la conexión de nuestra Raspberry Pi tanto al sensor de temperatura como al display.
+	
+	\subsection{Step 2 Lectura del sensor DS18B20 }
+	
+
+	Antes de poder utilizar nuestro sensor de temperatura, necesitamos realizar algunas configuraciones en nuestra Raspberry Pi. Una vez completadas estas configuraciones, podremos verificar su funcionamiento y observar los resultados de la temperatura en tiempo real. Sin embargo, es importante tener en cuenta que la temperatura que obtenemos inicialmente está en milicelsius (mC), por lo que necesitaremos convertirla a grados Celsius para su comprensión y uso adecuado. 
+	
+	
+	\subsection{Step 3: Configuración de comunicaciones I2C }
+
+
+	Para continuar, procederemos a utilizar la comunicación I2C. Dado que esta configuración ya ha sido realizada en prácticas anteriores, este paso debería ser bastante sencillo. Sin embargo, es importante verificar que la comunicación esté funcionando correctamente y que todos los componentes estén correctamente conectados y configurados para garantizar un funcionamiento adecuado.
+	
+	\section{Experiments}
+	
+	\subsection{Control the brightness intensity of the incandescent bulb. }
+
+	Realice un programa en Python que despliegue en consola la temperatura sensada por el DS18B20 cada segundo.
+	
+
+	Para llevar a cabo este ejercicio, es necesario acceder a la ubicación donde se encuentra la temperatura leída por nuestro sensor. Como mencionaste, esta temperatura se encuentra dentro de la carpeta /sys/bus/w1/devices/28-*. Por lo tanto, solo necesitaremos acceder a esta ubicación para obtener los datos de temperatura necesarios para nuestro programa.
+	\begin{verbatim}
+		dispositivo_folder = glob.glob
+		("/sys/bus/w1/devices/28-*")[0]
+		archivo = dispositivo_folder + 
+		"/w1_slave"
+		with open(archivo, "r") as 
+		archivo_temp:
+		lineas = archivo_temp.readlines()
+	\end{verbatim}
+	
+	En el código anterior, podemos observar que accedemos al archivo que contiene la temperatura del sensor. Después de acceder a este archivo, necesitamos leer su contenido para obtener los datos de la temperatura, los cuales están en milicelsius (mC). Una vez que hemos leído estos datos, procederemos a convertirlos a grados Celsius antes de imprimir la temperatura final. Esta conversión nos proporcionará la temperatura en una unidad más comprensible y útil para su visualización y análisis. Fig. \ref{fig:imagen}
+	
+
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.5\textwidth]{imagenes/Exp1.jpeg}
+		\caption{Resultados de temperatura}
+		\label{fig:imagen}
+	\end{figure}
+	
+		
+	\section{Conclusions}
+
+	Con esta práctica, llego a la conclusión de que la utilización del protocolo 1-Wire es sumamente impresionante, ya que facilita muchas tareas en situaciones de la vida real. Al combinarlo con la comunicación I2C, pudimos observar el funcionamiento conjunto de estos elementos. La comunicación I2C nos permitió establecer una conexión eficiente entre nuestra Raspberry Pi y nuestro display. Una vez establecida esta conexión, pudimos utilizarla en conjunto con el protocolo 1-Wire para obtener datos del sensor de temperatura.
+	
+	\bibliographystyle{plain}
+	\bibliography{biblio}
+\end{document}
