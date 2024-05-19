@@ -1,4 +1,4 @@
-\documentclass[letterpaper,12pt]{article}
+\documentclass[report,12pt]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[spanish]{babel}
 \usepackage{fullpage}
@@ -7,11 +7,16 @@
 \usepackage{url}
 \usepackage{hyperref}
 \usepackage{titling} % Agrega el paquete titling
-\usepackage[left=2.5cm, right=2.5cm, top=2.5cm, bottom=2.5cm]{geometry} % Márgenes de 1 pulgada (2.5 cm)
+\usepackage[left=2cm, right=2cm, top=2cm, bottom=2cm]{geometry} % Márgenes de 1 pulgada (2.5 cm)
 \usepackage{setspace}
 \usepackage{graphicx}
 \usepackage{caption} 
 \usepackage{xcolor} % Para definir colores personalizados
+\usepackage[table]{xcolor}
+\usepackage{array}
+\usepackage{makecell}
+\usepackage{hhline}
+\usepackage{tcolorbox}
 
 \usepackage{listings}
 \lstset{
@@ -36,72 +41,336 @@
 
 \setlength{\droptitle}{-8em} % Ajusta el espacio antes del título
 
-\title{Práctica 8: \\ Desplegado de temperatura en un display digital usando la Raspberry Pi}
+\title{Proyecto Final: \\ Centro Multimedia}
 \author{Daniela Ramírez Andrés}
 \date{}
 
 \begin{document}
-	\twocolumn
+%	\twocolumn
 	\maketitle
 	\vspace{-6\baselineskip} % Ajuste de espacio negativo para reducir la separación entre el título y el autor
-	\section{Introduction}
+	\section{Introdución}
+	Conocer el funcionamiento de un sistema embebido nos permite tener un mejor control sobre lo que deseamos realizar. Al ser de propósito específico, no existen complicaciones respecto a posibles fallos. La Raspberry Pi es una tarjeta microcontroladora que actúa como un sistema embebido. Para su funcionamiento, debe contar con un sistema operativo que nos permita controlar la Raspberry Pi. En este caso, usaremos Raspbian OS, que es una distribución basada en Debian. \cite{calderon2014tutoria}
+	
+	La Raspberry Pi nos permite crear, de manera efectiva y económica, un centro multimedia para reproducir contenido digital. Al contar con dispositivos periféricos de bajo costo, la Raspberry Pi permite la reproducción de estos medios digitales con un gestor gráfico simple, como VLC. Sin embargo, para contenido de streaming online, podemos acceder mediante un navegador web optimizado para la reproducción de video protegido con DRM.
+	 \cite{gonzález2015raspberrypi}
 	
 	
+	\section{DRM}
+	DRM (Gestión de Derechos Digitales) es un conjunto de tecnologías y herramientas utilizadas para controlar y gestionar el acceso y uso de contenido digital. Su propósito principal es proteger los derechos de los propietarios de medios, asegurando que el contenido se utilice de acuerdo con las licencias y restricciones establecidas. DRM previene la copia, distribución y modificación no autorizada de obras digitales, garantizando así que los creadores y distribuidores mantengan el control sobre cómo se utilizan sus productos.\cite{subodh2023drm}
 	
-	En esta práctica, implementaremos una comunicación I2C para facilitar la interacción entre dispositivos. En particular, estableceremos una conexión entre nuestro display LCD y nuestra Raspberry Pi utilizando este protocolo. Además, integraremos un dispositivo 1-Wire como nuestro sensor de temperatura. Con estos componentes, podremos visualizar la temperatura en el display, aprovechando así la efectividad del protocolo 1-Wire.
+	\section{Chromium}
+	Chromium es una base de código abierto para desarrollar un navegador web, mantenida por diversas compañías que posteriormente usan el código fuente para crear su propia versión de navegador con características adicionales. Este enfoque permite a los desarrolladores acceder a una base sólida y bien mantenida para construir sus propios navegadores web, adaptados a sus necesidades específicas o a las demandas del mercado.
 	
-	Es importante destacar que el protocolo 1-Wire prescinde de una señal de reloj externa. En su lugar, los dispositivos esclavos se sincronizan internamente con una señal generada por el dispositivo maestro. Esta característica es fundamental para comprender el funcionamiento y la eficacia de este protocolo. \cite{agnihotri2023}
-	
-	
-	\subsection{Step 1 Wiring}
-	
-	
-	Para el primer paso, realizaremos la conexión física de nuestro circuito. Esto implica la instalación del sensor de temperatura junto con las resistencias necesarias, así como la incorporación de los LED. Una vez completada esta etapa, procederemos a conectar el adaptador al display. Posteriormente, pasaremos al segundo paso, que consistirá en la conexión de nuestra Raspberry Pi tanto al sensor de temperatura como al display.
-	
-	\subsection{Step 2 Lectura del sensor DS18B20 }
-	
-
-	Antes de poder utilizar nuestro sensor de temperatura, necesitamos realizar algunas configuraciones en nuestra Raspberry Pi. Una vez completadas estas configuraciones, podremos verificar su funcionamiento y observar los resultados de la temperatura en tiempo real. Sin embargo, es importante tener en cuenta que la temperatura que obtenemos inicialmente está en milicelsius (mC), por lo que necesitaremos convertirla a grados Celsius para su comprensión y uso adecuado. 
-	
-	
-	\subsection{Step 3: Configuración de comunicaciones I2C }
-
-
-	Para continuar, procederemos a utilizar la comunicación I2C. Dado que esta configuración ya ha sido realizada en prácticas anteriores, este paso debería ser bastante sencillo. Sin embargo, es importante verificar que la comunicación esté funcionando correctamente y que todos los componentes estén correctamente conectados y configurados para garantizar un funcionamiento adecuado.
-	
-	\section{Experiments}
-	
-	\subsection{Control the brightness intensity of the incandescent bulb. }
-
-	Realice un programa en Python que despliegue en consola la temperatura sensada por el DS18B20 cada segundo.
+	\section{Detección de inserción de dispositivos USB con pyudev }
 	
 
-	Para llevar a cabo este ejercicio, es necesario acceder a la ubicación donde se encuentra la temperatura leída por nuestro sensor. Como mencionaste, esta temperatura se encuentra dentro de la carpeta /sys/bus/w1/devices/28-*. Por lo tanto, solo necesitaremos acceder a esta ubicación para obtener los datos de temperatura necesarios para nuestro programa.
-	\begin{verbatim}
-		dispositivo_folder = glob.glob
-		("/sys/bus/w1/devices/28-*")[0]
-		archivo = dispositivo_folder + 
-		"/w1_slave"
-		with open(archivo, "r") as 
-		archivo_temp:
-		lineas = archivo_temp.readlines()
-	\end{verbatim}
+	Según la documentación oficial, pyudev es una biblioteca desarrollada en Python puro y licenciada bajo LGPL, que actúa como un envoltorio para libudev, la biblioteca de gestión de dispositivos y hardware en sistemas Linux. Con pyudev, es posible enumerar dispositivos, consultar sus propiedades y atributos, y monitorizarlos de manera asíncrona. A continuación, se describen los pasos necesarios para detectar nuevos dispositivos:
 	
-	En el código anterior, podemos observar que accedemos al archivo que contiene la temperatura del sensor. Después de acceder a este archivo, necesitamos leer su contenido para obtener los datos de la temperatura, los cuales están en milicelsius (mC). Una vez que hemos leído estos datos, procederemos a convertirlos a grados Celsius antes de imprimir la temperatura final. Esta conversión nos proporcionará la temperatura en una unidad más comprensible y útil para su visualización y análisis. Fig. \ref{fig:imagen}
+	\begin{itemize}[label=$\bullet$, itemsep=0pt]
+		\item Importar las librerías necesarias.
+		\item Definir una función \texttt{device\_event} que maneje los eventos de dispositivos. Esta función se ejecuta cada vez que ocurre un evento de dispositivo y verifica si la acción es 'add' (agregar) y si el dispositivo pertenece al bus USB.
+		\item Crear un contexto pyudev.
+		\item Configurar un monitor para escuchar eventos de la subred 'usb'.
+		\item Crear un observador (\texttt{MonitorObserver}) que ejecute la función \texttt{device\_event} cada vez que ocurra un evento relevante.
+		\item Iniciar el observador y entrar en un bucle infinito para mantener el script en ejecución.
+	\end{itemize}
+	
+	\section{Materiales}
+	Para la realización de este proyecto, será necesario contar con una Raspberry Pi 3B o superior con el sistema operativo Raspbian OS Lite, basado en Debian. Además, se requerirá un monitor, una microSD, un dispositivo apuntador para controlar el centro multimedia y una unidad USB que contenga archivos de reproducción digital, como imágenes, videos y música. 
+
+	\begin{center}
+	\renewcommand{\arraystretch}{1.5}
+	\setlength{\arrayrulewidth}{1pt}
+	\arrayrulecolor{red}
+	\begin{tabular}{|p{0.9\linewidth}|}
+		\hline
+		\multicolumn{1}{|c|}{\cellcolor{red}\textcolor{white}{\textbf{Importante}}} \\
+		\hline
+		Es importante destacar que el sistema operativo debe estar configurado sin un entorno de escritorio, es decir, sin un gestor gráfico. \\
+		\hline
+	\end{tabular}
+	\end{center}
+
+	\section{Instrucciones}
+	\begin{enumerate}[itemsep=0pt]
+		\item Descarga y carga de sistema operativo
+		\item Configuración para servicios en línea
+		\item Configuración para USB
+	\end{enumerate}
+	
+	\subsection{Descarga y carga de sistema operativo}
+
+	\subsubsection{Descarga de RaspbianOS Lite}
+	Deberá ingresar a la página web \url{https://www.raspberrypi.com/software/operating-systems/}, donde podrá descargar una versión de RaspbianOS Lite. Si posee una Raspberry Pi 3B o superior, se recomienda utilizar la versión de 64 bits. Es importante tener en cuenta que, mientras más reciente sea la versión, es más probable que contenga algunos errores que aún no han sido probados. Por esta razón, para nuestro caso, se recomienda utilizar una versión más antigua. En este caso, contamos con la versión de febrero de 2020.
+	
+	\subsubsection{Escribir imagen iso en la microSD}
+	Una vez descargado el sistema operativo contara con una carpeta comprimira debera descomprimirla y tendra un archivo tipo iso. Para escribir la imgen en la microSD se requiere de un programa externo que nos ayude dependiendo del sistema operativo con el que contemos 
+
+	\begin{itemize}[label=$\bullet$, itemsep=0pt]
+	\item \textbf{Escribiendo iso en Linux} \par
+	1. Para escribir una imagen ISO, es necesario contar con el programa Etcher. Para descargar e instalarlo, ejecutaremos las siguientes líneas:
+	
+	\vspace{.5cm}
+	
 	
 
-	\begin{figure}[h]
-		\centering
-		\includegraphics[width=0.5\textwidth]{imagenes/Exp1.jpeg}
-		\caption{Resultados de temperatura}
-		\label{fig:imagen}
-	\end{figure}
+\begin{table}[h]
+	\centering
+	\footnotesize % Tamaño de fuente pequeño
+	\color{gray} % Cambiar el color del texto a gris
+	\arrayrulecolor{white} % Color del borde de la tabla
+	\begin{tabular}{|p{\linewidth}|}
+		\hline
+		\begin{verbatim}
+			$ wget https://github.com/balena-io/etcher/releases/download/v1.5.126/balena-etcher-electron-
+			1.5.126-linux-x64.zip
+			$ unzip balena-etcher-electron-1.5.126-linux-x64.zip
+			# mv balenaEtcher-electron-1.5.126-x86_64.AppImage /usr/local/bin/balenaEtcher
+			# chmod +x /usr/local/bin/balenaEtcher
+		\end{verbatim}
+		\\
+		\hline
+	\end{tabular}
+\end{table}
 	
+	2. En la interfaz de Etcher, selecciona la imagen de disco que deseas grabar en tu tarjeta SD.
+	3. Selecciona el dispositivo USB o tarjeta SD en el que deseas grabar la imagen. 
+	
+		\begin{center}
+		\renewcommand{\arraystretch}{1.5}
+		\setlength{\arrayrulewidth}{1pt}
+		\arrayrulecolor{red}
+		\begin{tabular}{|p{0.9\linewidth}|}
+			\hline
+			\multicolumn{1}{|c|}{\cellcolor{red}\textcolor{white}{\textbf{Advertencia}}} \\
+			\hline
+			Ten en cuenta que esto borrará todos los datos en el dispositivo seleccionado, así que asegúrate de elegir el dispositivo correcto. \\
+			\hline
+		\end{tabular}
+	\end{center}
+	
+	4. Haz clic en el botón "Flash!" para iniciar el proceso de grabación. Es posible que necesites ingresar tu contraseña de superusuario (root) para permitir que Etcher acceda al dispositivo seleccionado.
+
+	5. Una vez que Etcher haya terminado de grabar la imagen en el dispositivo, verás un mensaje de confirmación. Puedes cerrar Etcher y retirar el dispositivo USB o tarjeta SD de forma segura.
+	
+	\item \textbf{Escribiendo iso en Windows} \par
+	
+	1. Entra a la página \url{https://sourceforge.net/projects/win32diskimager/} donde encontrarás la descarga de Win32 Disk Imager, el cual nos servirá para grabar nuestra imagen.
+	2. Una vez que se haya completado la descarga, haz doble clic en el archivo .exe descargado para iniciar el proceso de instalación.
+	
+	3. Una vez instalado, debemos abrirlo. Haz clic en el icono de la carpeta junto al campo "Imagen de disco" para seleccionar la imagen de disco que deseas escribir en tu dispositivo de almacenamiento.
+	
+	4. Haz clic en la lista desplegable de "Dispositivo" para seleccionar el dispositivo de almacenamiento al que deseas escribir la imagen de disco.
+	
+	5. Una vez que hayas seleccionado la imagen de disco y el dispositivo de almacenamiento, haz clic en el botón "Escribir" para comenzar a escribir la imagen en el dispositivo.
+	
+	6.Ahora puedes cerrar Win32 Disk Imager y desconectar tu dispositivo de almacenamiento y conectarlo en la Raspberry pi.
+	\end{itemize}
+	\subsubsection{Configuraciones de RaspbianOS Lite}
+	
+	Una vez conectada la microSD a nuestra Raspberry Pi, debemos proceder a conectarla a la corriente usando un cable tipo C. Además, necesitaremos un adaptador micro HDMI a VGA y un cable VGA para conectar nuestro monitor. También haremos uso de un teclado.
+	
+	Una vez que todo esté conectado, en nuestro monitor aparecerá un menú de configuración donde elegiremos el tipo de idioma para nuestro teclado. También se nos pedirá que creemos un usuario y una contraseña. Al ser un sistema operativo sin interfaz gráfica, lo único que veremos será una terminal donde trabajaremos.
+	
+	\begin{enumerate}[label=\alph*.]
+		\item Configuración de red alámbrica et0 con IP stática\par
 		
-	\section{Conclusions}
+	Como mencionamos anteriormente, este proyecto está realizado en una versión más antigua de Raspbian OS, por lo cual configuraremos nuestra red cableada modificando el archivo \texttt{dhcpcd.conf.}
+	
+	Tome en cuenta que los comandos marcados con \# deben ejecutarse con permisos de superusuario (sudo).
+	
+	1. Abra el archivo dhcpcd.conf que se encuentra en \texttt{/etc/dhcpcd.conf.}
+	
+	\vspace{-1cm}
+		\begin{table}[h]
+			\centering
+			\small % Tamaño de fuente pequeño
+			\color{gray} % Cambiar el color del texto a gris
+			\arrayrulecolor{white} % Color del borde de la tabla
+			\begin{tabular}{|p{\linewidth}|}
+				\hline
+				\begin{verbatim}
+					# sudo nano /etc/dhcpcd.conf
+				\end{verbatim}
+				\\
+				\hline
+			\end{tabular}
+		\end{table}
+		
+	\vspace{-1cm}
+		2. Ahora debemos editar el archivo para configurar nuestra IP local. Localice la línea \texttt{\# Example static IP configuration:}. Verá un código similar al siguiente:
+		
+	\vspace{-1cm}
+			\begin{table}[h]
+			\centering
+			\small % Tamaño de fuente pequeño
+			\color{gray} % Cambiar el color del texto a gris
+			\arrayrulecolor{white} % Color del borde de la tabla
+			\begin{tabular}{|p{\linewidth}|}
+				\hline
+				\begin{verbatim}
+					# Example static IP configuration:
+					#interface eth0
+					#static ip_address=192.168.0.10/24
+					#static ip6_address=fd51:42f8:caae:d92e::ff/64
+					#static routers=192.168.0.1
+					#static domain_name_servers=192.168.0.1 8.8.8.8 fd51:42f8:caae:d92e::1
+				\end{verbatim}
+				\\
+				\hline
+			\end{tabular}
+		\end{table} 
+		
+	\vspace{-1cm}
+		3.Edite el archivo con su IP local como se muestra a continuación:
+		
+		\vspace{-1cm}
+			\begin{table}[h]
+			\centering
+			\small % Tamaño de fuente pequeño
+			\color{gray} % Cambiar el color del texto a gris
+			\arrayrulecolor{white} % Color del borde de la tabla
+			\begin{tabular}{|p{\linewidth}|}
+				\hline
+				\begin{verbatim}
+					# Example static IP configuration:
+					interface eth0
+					static ip_address=192.168.100.1/24
+					static routers=192.168.100.1
+					static domain_name_servers=132.248.204.1 132.248.10.2 8.8.8.8
+				\end{verbatim}
+				\\
+				\hline
+			\end{tabular}
+		\end{table} 
+		\vspace{-1cm}
+		
+		\newpage
+	donde
+		\begin{itemize}
+			\item \texttt{static\_ip\_address} es la dirección IP de la Raspberry Pi, seguida por el código de la máscara de subred (por ejemplo, 24 equivale a 255.255.255.0).
+			\item \texttt{static\_routers} es la dirección IP del enrutador de la red local, que actúa como la puerta de enlace hacia Internet.
+			\item \texttt{static\_domain\_name\_servers} es la dirección de los servidores de nombres de dominio (DNS), utilizados para la resolución de nombres en Internet.
+		\end{itemize}
+		
+	\end{enumerate}
+	
 
-	Con esta práctica, llego a la conclusión de que la utilización del protocolo 1-Wire es sumamente impresionante, ya que facilita muchas tareas en situaciones de la vida real. Al combinarlo con la comunicación I2C, pudimos observar el funcionamiento conjunto de estos elementos. La comunicación I2C nos permitió establecer una conexión eficiente entre nuestra Raspberry Pi y nuestro display. Una vez establecida esta conexión, pudimos utilizarla en conjunto con el protocolo 1-Wire para obtener datos del sensor de temperatura.
+	\subsection{Configuración para servicios en línea}
+	Para los servicios en linea devemos contar con un navegador y tener correctamente configurado el DRM el cual nos permitira acceder a este contenido. 
+	
+	\subsubsection{Instalación de chromium}
+	\begin{itemize}
+	\item Para poder ejecutar Chromium, necesitaremos una interfaz gráfica sencilla que nos permita visualizar el navegador. Para esto, utilizaremos \texttt{xinit} o \texttt{startx}. \cite{raspberrypi_forum}\par
+	
+	\vspace{-1cm}
+				\begin{table}[h]
+		\centering
+		\small % Tamaño de fuente pequeño
+		\color{gray} % Cambiar el color del texto a gris
+		\arrayrulecolor{white} % Color del borde de la tabla
+		\begin{tabular}{|p{\linewidth}|}
+			\hline
+			\begin{verbatim}
+				# apt-get update
+				# apt-get install xinit
+			\end{verbatim}
+			\\
+			\hline
+		\end{tabular}
+	\end{table}
+	\vspace{-1cm}
+	\item Una vez instalado, procederemos a instalar Chromium ejecutando lo siguiente:\par
+		\vspace{-1cm}
+	\begin{table}[h]
+		\centering
+		\small % Tamaño de fuente pequeño
+		\color{gray} % Cambiar el color del texto a gris
+		\arrayrulecolor{white} % Color del borde de la tabla
+		\begin{tabular}{|p{\linewidth}|}
+			\hline
+			\begin{verbatim}
+				# apt-get install chromium-browser
+			\end{verbatim}
+			\\
+			\hline
+		\end{tabular}
+	\end{table}
+	\vspace{-1cm}
+	
+	\item Acceder al navegador \par
+	Vamos a verificar que tenemos acceso al navegador con la siguiente línea:
+	
+		\vspace{-1cm}
+	\begin{table}[h]
+		\centering
+		\small % Tamaño de fuente pequeño
+		\color{gray} % Cambiar el color del texto a gris
+		\arrayrulecolor{white} % Color del borde de la tabla
+		\begin{tabular}{|p{\linewidth}|}
+			\hline
+			\begin{verbatim}
+				$ startx /bin/chromium-browser
+			\end{verbatim}
+			\\
+			\hline
+		\end{tabular}
+	\end{table}
+	\vspace{-1cm}
+	
+	\end{itemize}
+	
+	\subsubsection{Configuración de DRM}
+	Para poder visualizar el contenido de estas plataformas, es necesario configurarlas para que el DRM sea accesible. Esto implica establecer la configuración adecuada y, en algunos casos, instalar y configurar software adicional, como navegadores web o reproductores multimedia compatibles con DRM. \cite{raspberryparanovatos}
+	
+	\newpage
+	\begin{itemize}
+		\item Actualización de paquetes\par  
+			\vspace{-1cm}
+		\begin{table}[h]
+			\centering
+			\small % Tamaño de fuente pequeño
+			\color{gray} % Cambiar el color del texto a gris
+			\arrayrulecolor{white} % Color del borde de la tabla
+			\begin{tabular}{|p{\linewidth}|}
+				\hline
+				\begin{verbatim}
+					# apt update && sudo apt full-upgrade -y
+				\end{verbatim}
+				\\
+				\hline
+			\end{tabular}
+		\end{table}
+			 \vspace{-1cm}
+		\item instalar las librerías widevine \par 
+			\vspace{-1cm}
+		\begin{table}[h]
+			\centering
+			\small % Tamaño de fuente pequeño
+			\color{gray} % Cambiar el color del texto a gris
+			\arrayrulecolor{white} % Color del borde de la tabla
+			\begin{tabular}{|p{\linewidth}|}
+				\hline
+				\begin{verbatim}
+					#  apt upgrade && sudo apt install libwidevinecdm0 -y
+				\end{verbatim}
+				\\
+				\hline
+			\end{tabular}
+		\end{table}
+	\end{itemize}
+	
+	\subsection{Configuración para USB}
+
+	\section{Resultados}
+	\section{Conclusiones}
+	\section{Cuestionario}
+
+	
 	
 	\bibliographystyle{plain}
 	\bibliography{biblio}
+	
+	\section{Apéndice}
 \end{document}
