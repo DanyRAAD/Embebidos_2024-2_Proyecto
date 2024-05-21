@@ -324,47 +324,66 @@
 	\subsubsection{Configuración de DRM}
 	Para poder visualizar el contenido de estas plataformas, es necesario configurarlas para que el DRM sea accesible. Esto implica establecer la configuración adecuada y, en algunos casos, instalar y configurar software adicional, como navegadores web o reproductores multimedia compatibles con DRM. \cite{raspberryparanovatos}
 	
-	\newpage
+	%\newpage
 	\begin{itemize}
 		\item Actualización de paquetes\par  
-			\vspace{-1cm}
-		\begin{table}[h]
-			\centering
-			\small % Tamaño de fuente pequeño
-			\color{gray} % Cambiar el color del texto a gris
-			\arrayrulecolor{white} % Color del borde de la tabla
-			\begin{tabular}{|p{\linewidth}|}
-				\hline
-				\begin{verbatim}
-					# apt update && sudo apt full-upgrade -y
-				\end{verbatim}
-				\\
-				\hline
-			\end{tabular}
-		\end{table}
-			 \vspace{-1cm}
+		\vspace{-0.5cm}
+		\begingroup
+		\color{gray}
+		\begin{verbatim}
+		# apt update && sudo apt full-upgrade -y
+		\end{verbatim}
+		\endgroup			
+		\vspace{-1cm}
 		\item instalar las librerías widevine \par 
-			\vspace{-1cm}
-		\begin{table}[h]
-			\centering
-			\small % Tamaño de fuente pequeño
-			\color{gray} % Cambiar el color del texto a gris
-			\arrayrulecolor{white} % Color del borde de la tabla
-			\begin{tabular}{|p{\linewidth}|}
-				\hline
-				\begin{verbatim}
-					#  apt upgrade && sudo apt install libwidevinecdm0 -y
-				\end{verbatim}
-				\\
-				\hline
-			\end{tabular}
-		\end{table}
+		\vspace{-0.5cm}
+		\begingroup
+		\color{gray}
+		\begin{verbatim}
+		#  apt upgrade && sudo apt install libwidevinecdm0 -y
+		\end{verbatim}
+		\endgroup
 	\end{itemize}
-	
+	 \vspace{-2cm}
+	 
+	 
 	\subsection{Configuración para USB}
+	La Raspberry Pi no puede montar una USB por sí sola; es necesario hacerlo manualmente e identificar en qué dispositivo está. Para hacer esto mediante código en Python, es necesario instalar algunas librerías. Asimismo, para reproducir el contenido, necesitamos un reproductor, en este caso VLC, para el cual también debemos instalar algunas librerías.
+	\begin{enumerate} 
+	\item Actualizar el Sistema \par
+	\vspace{-0.4cm}
+	\begingroup
+	\color{gray}
+	\begin{verbatim}
+	# apt-get update
+	# apt-get upgrade
+	\end{verbatim}
+	\endgroup			
+	\vspace{-0.5cm}
+	\item Instalar VLC y udisks2 \par
+	\vspace{-0.4cm}
+	\begingroup
+	\color{gray}
+	\begin{verbatim}
+	# apt-get install vlc udisks2
+	\end{verbatim}
+	\endgroup
+	\vspace{-0.8cm}
+	\item Instalar Dependencias y Librerias de Python \par
+	\vspace{-0.4cm}
+	\begingroup
+	\color{gray}
+	\begin{verbatim}
+	# apt-get install python3-pip
+	$ pip3 install pyudev python-vlc
+	\end{verbatim}
+	\endgroup
 
-	\section{Resultados}
+	\end{enumerate} 
+
+	\section{Resultados Repositorio}
 	\section{Conclusiones}
+	La implementación de un sistema embebido con la Raspberry Pi demostró ser altamente confiable y eficiente para controlar un centro multimedia con recursos limitados. La Raspberry Pi permitió la reproducción fluida de medios digitales, incluyendo audio, video e imágenes, y facilitó el acceso a servicios de contenido en línea como Netflix, Spotify, Amazon Music y Vix. Sin embargo, debido a las restricciones impuestas por la gestión de derechos digitales, no fue posible reproducir directamente estos contenidos a través de Chromium. Para superar esta limitación, fue necesario descargar y configurar paquetes de terceros, lo que permitió habilitar la reproducción de estos servicios digitales. Además, la configuración automática de dispositivos USB se logró mediante la instalación de librerías específicas que permiten montar y reproducir automáticamente el contenido utilizando VLC cada vez que se conecta un dispositivo. 
 	\section{Cuestionario}
 
 	
